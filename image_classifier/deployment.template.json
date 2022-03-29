@@ -58,7 +58,7 @@
         },
         "modules": {
           "classifier": {
-            "version": "1.0",
+            "version": "1.4",
             "type": "docker",
             "status": "running",
             "restartPolicy": "always",
@@ -68,7 +68,7 @@
             }
           },
           "pictureProvider": {
-            "version": "1.0",
+            "version": "1.3",
             "type": "docker",
             "env": {
               "storageFolder": {

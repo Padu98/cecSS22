@@ -8,6 +8,7 @@ import signal
 import threading
 from azure.iot.device.aio import IoTHubModuleClient
 
+#das ist ein test
 
 # Event indicating client stop
 stop_event = threading.Event()
