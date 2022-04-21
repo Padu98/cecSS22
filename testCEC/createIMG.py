@@ -2,14 +2,11 @@ from azureml.core.image import Image, ContainerImage
 from azureml.core.workspace import Workspace
 from azureml.core.experiment import Experiment
 from azureml.core.model import Model
-from azureml.core import Environment
 
 import pickle
 import json
 import numpy as np
 import pandas as pd
-from azureml.core.model import Model
-
 
 AZURE_SUBSCRIPTION_ID = 'ba16188a-6c52-460f-b7b3-3410052ed582'
 ML_WORKSPACE_NAME = 'mlWorkspaceSS22'
@@ -28,7 +25,6 @@ if not os.path.exists('./data'):
 for f in glob.glob('./*.txt') + glob.glob('./*.csv'):
     shutil.move(f, './data/')
 
-from azureml.core import Workspace
 workspace_name = ML_WORKSPACE_NAME
 subscription_id = AZURE_SUBSCRIPTION_ID
 resource_group = RESOURCE_GROUP_NAME
@@ -67,7 +63,7 @@ image_config = ContainerImage.image_configuration(runtime= "python",
                                  execution_script = 'score.py',
                                  conda_file = 'conda_env.yaml',
                                  tags = {'area': "digits", 'type': "automl_classification"},
-                                 base_image = 'arm32v7/python:3.9-alpine',
+                                 base_image = None, #'arm32v7/python:3.9-alpine'
                                  description = "Image for Edge ML samples",
                                  docker_file="Dockerfile.arm32v7")
 
