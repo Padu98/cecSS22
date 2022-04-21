@@ -1,0 +1,30 @@
+RUN apt update && apt upgrade -y && apt install -y build-essential
+#RUN apt install -y libcurl3
+
+RUN pip install --upgrade --force-reinstall pip==9.0.3
+RUN pip install ruamel-yaml --disable-pip-version-check
+RUN pip install --upgrade  --force-reinstall pip==20.2
+
+RUN apt-get install gcc
+RUN apt install -y mpich
+RUN pip install mpi4py
+
+RUN pip install azureml-defaults --ignore-installed ruamel.yaml
+RUN pip install azureml-designer-pytorch-modules==0.0.45 --ignore-installed ruamel.yaml
+RUN pip install azureml-designer-serving==0.0.10 --ignore-installed ruamel.yaml
+
+
+
+
+
+
+#name: project_environment
+#channels:
+#- conda-forge
+#dependencies:
+#- python=3.6.8
+#- pip=20.2
+#- pip:
+#  - azureml-defaults
+#  - azureml-designer-pytorch-modules==0.0.45
+#  - azureml-designer-serving==0.0.10
