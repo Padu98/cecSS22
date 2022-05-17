@@ -1,0 +1,46 @@
+Dockercontainer die auf Alpin-Basis Images basieren.
+Nur auf debina buster (oder höher) und nur auf 32Bit Architekturen.
+
+Problem: libseccomp2 library fehlt/fehlerhaft
+Lösung: Nachinstallieren
+
+sudo apt-key adv --keyserver keyserver.ubuntu.com --recv-keys 04EE7237B7D453EC 648ACFD622F3D138
+echo "deb http://deb.debian.org/debian buster-backports main" | sudo tee -a /etc/apt/sources.list.d/buster-backports.list
+sudo apt update
+sudo apt install -t buster-backports libseccomp2
+
+funktioniert nur bei buster
+
+
+
+Python fehler: ValueError: source code string cannot contain null bytes
+Lösung: unten rechts in visual studio ide encoding erneut mit wert UTF-8 speichern.
+
+oder auch nicht...
+
+######################################################################################
+docker: Error response from daemon: cgroups: cgroup mountpoint does not exist: unknown.
+In rc.local:
+
+mkdir /sys/fs/cgroup/systemd
+
+mount -t cgroup -o none,name=systemd cgroup /sys/fs/cgroup/systemd
+######################################################################################
+
+#####################################################################
+Azure login klappt nicht in visual studio: (eigentlich immer beim wechseln des Accounts)
+
+For me I just copied the Azure tenant ID from the portal: Go to ActiveDirectoy in Azure then go to properties you'll see the tenant ID.
+Now just paste the tenant ID in vscode: File->Preferences->Settings, then search for keyword "tenant" and add your Azure tenant id.
+
+-> Datei, Einstellungen, Einstellungen -> nach tenant suchen
+-> Danach erneut über azure extension signIn
+#####################################################################
+
+#############################################################
+IoT Edge Runtime installieren: 
+https://docs.microsoft.com/en-us/azure/iot-edge/how-to-provision-single-device-linux-symmetric?view=iotedge-2020-11&tabs=azure-portal%2Cubuntu
+#############################################################
+
+Semesterprojekt cec: https://docs.microsoft.com/en-us/azure/iot-edge/tutorial-deploy-custom-vision?view=iotedge-2020-11
+
