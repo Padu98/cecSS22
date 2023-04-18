@@ -1,0 +1,18 @@
+{
+  "$schema-version": "0.0.1",
+  "description": "",
+  "image": {
+    "repository": "cecregistry.azurecr.io/classifier",
+    "tag": {
+      "version": "0.0.1",
+      "platforms": {
+        "arm32v7": "./Dockerfile.arm32v7",
+        "amd64": "./Dockerfile.arm32v7",
+        "arm32v7.debug": "./Dockerfile.arm32v7.debug"
+      }
+    },
+    "buildOptions": [],
+    "contextPath": "./"
+  },
+  "language": "python"
+}
