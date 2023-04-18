@@ -44,3 +44,6 @@ https://docs.microsoft.com/en-us/azure/iot-edge/how-to-provision-single-device-l
 
 Semesterprojekt cec: https://docs.microsoft.com/en-us/azure/iot-edge/tutorial-deploy-custom-vision?view=iotedge-2020-11
 
+#################################################################
+Image Bauen Befehl: 
+sudo docker build  --rm -f "/home/pampadu/Documents/Classifier/modules/Classifier/Dockerfile.arm32v7" -t cecregistry.azurecr.io/classifier:0.0.1-arm32v7 "/home/pampadu/Documents/Classifier/modules/Classifier" && docker push cecregistry.azurecr.io/classifier:0.0.1-arm32v7 && docker build  --rm -f "/home/pampadu/Documents/Classifier/modules/cameraCapture/Dockerfile.arm32v7" -t cecregistry.azurecr.io/cameracapture:0.0.1-arm32v7 "/home/pampadu/Documents/Classifier/modules/cameraCapture" && docker push cecregistry.azurecr.io/cameracapture:0.0.1-arm32v7
