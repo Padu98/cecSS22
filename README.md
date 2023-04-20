@@ -1,2 +1,0 @@
-# cecSS22
-Moinsen 

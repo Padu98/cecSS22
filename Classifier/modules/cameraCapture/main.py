@@ -67,6 +67,7 @@ if __name__ == '__main__':
         # Retrieve the image location and image classifying server endpoint from container environment
         IMAGE_PATH = os.getenv('IMAGE_PATH', "")
         IMAGE_PROCESSING_ENDPOINT = os.getenv('IMAGE_PROCESSING_ENDPOINT', "")
+        print(IMAGE_PROCESSING_ENDPOINT)
     except ValueError as error:
         print ( error )
         sys.exit(1)

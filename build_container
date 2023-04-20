@@ -1,0 +1,8 @@
+Camera Capture:
+
+docker build  --rm -f "/home/pampadu/Documents/Classifier/modules/cameraCapture/Dockerfile.arm32v7" -t cecregistry.azurecr.io/cameracapture:0.0.1-arm32v7 "/home/pampadu/Documents/Classifier/modules/cameraCapture"
+
+Classifier:
+
+sudo docker build  --rm -f "/home/pampadu/cecSS22/Classifier/modules/Classifier/Dockerfile" -t cecregistry.azurecr.io/classifier:0.0.2 "/home/pampadu/cecSS22/Classifier/modules/Classifier"
+sudo docker push cecregistry.azurecr.io/classifier:0.0.2
