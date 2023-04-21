@@ -42,7 +42,7 @@
             "status": "running",
             "restartPolicy": "always",
             "settings": {
-              "image": "cecregistry.azurecr.io/classifier:0.0.2-arm32v7",
+              "image": "cecregistry.azurecr.io/classifier:0.0.4-arm32v7",
               "createOptions": "{}"
             }
           },
