@@ -74,7 +74,13 @@
             "restartPolicy": "always",
             "settings": {
               "image": "${MODULES.cameraCapture}",
-              "createOptions": "{\"Env\":[\"IMAGE_PATH=1033.png\",\"IMAGE_PROCESSING_ENDPOINT=http://Classifier/image\"]}"
+              "createOptions":{
+                "HostConfig": {
+                  "Binds": [
+                    "/iotedge/images:/images"
+                  ]
+                }
+              }
             }
           }
         }

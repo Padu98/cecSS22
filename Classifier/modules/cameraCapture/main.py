@@ -2,77 +2,94 @@
 # Licensed under the MIT license. See LICENSE file in the project root for
 # full license information.
 
-import time
-import sys
-import os
 import requests
 import json
-from azure.iot.device import IoTHubModuleClient, Message
+from azure.iot.device.aio import IoTHubModuleClient
+from azure.iot.device import MethodResponse, Message
+import asyncio
+import base64
+import io
 
-# global counters
-SENT_IMAGES = 0
+def create_client():
+    iotclient = IoTHubModuleClient.create_from_edge_environment()
+    async def receive_methodrequest_handler(method):
+        if method.name == "classify":
+            base64_bytes_received = (method.payload).encode('utf-8')
+            byte_arr_received = base64.b64decode(base64_bytes_received)
+            
+            try:
+                with open("/images/classify_image.png", "wb") as file:
+                    file.write(byte_arr_received)
+            except Exception as e:
+                print(f"Error while writing file: {e}")
+            
+            classification = sendFrameForProcessing("/images/classify_image.png", "http://classifier/image")
+            print(classification)
+            await send_to_hub(classification)
+            payload = {"data" : "successfully", "result" : classification}
+            method_response = MethodResponse.create_from_method_request(method, 200, payload)
+            await iotclient.send_method_response(method_response)
+            
+        if method.name == "test":
+            payload = {"data" : "successfully", "result" : 'test'}
+            method_response = MethodResponse.create_from_method_request(method, 201, payload)
+            await iotclient.send_method_response(method_response)
+        else:
+            payload = {"data" : "method not known"}
+            method_response = MethodResponse.create_from_method_request(method, 400, payload)
+            await iotclient.send_method_response(method_response)
 
-# global client
-CLIENT = None
+    async def send_to_hub(strMessage):
+        message = Message(bytearray(strMessage, 'utf8'))
+        await iotclient.send_message_to_output(message, "output1")
 
-# Send a message to IoT Hub
-# Route output1 to $upstream in deployment.template.json
-def send_to_hub(strMessage):
-    message = Message(bytearray(strMessage, 'utf8'))
-    CLIENT.send_message_to_output(message, "output1")
-    global SENT_IMAGES
-    SENT_IMAGES += 1
-    print( "Total images sent: {}".format(SENT_IMAGES) )
+ 
+    def sendFrameForProcessing(imagePath, imageProcessingEndpoint):
+        headers = {'Content-Type': 'application/octet-stream'}
+        with open(imagePath, mode="rb") as test_image:
+            try:
+                response = requests.post(imageProcessingEndpoint, headers = headers, data = test_image) #davor dataBytesIO
+                print("Response from classification service: (" + str(response.status_code) + ") " + json.dumps(response.json()) + "\n")
+            except Exception as e:
+                print(e)
+                print("No response from classification service")
+                return None
 
-# Send an image to the image classifying server
-# Return the JSON response from the server with the prediction result
-def sendFrameForProcessing(imagePath, imageProcessingEndpoint):
-    headers = {'Content-Type': 'application/octet-stream'}
+        return json.dumps(response.json())
 
-    with open(imagePath, mode="rb") as test_image:
-        try:
-            response = requests.post(imageProcessingEndpoint, headers = headers, data = test_image)
-            print("Response from classification service: (" + str(response.status_code) + ") " + json.dumps(response.json()) + "\n")
-        except Exception as e:
-            print(e)
-            print("No response from classification service")
-            return None
-
-    return json.dumps(response.json())
-
-def main(imagePath, imageProcessingEndpoint):
+    print('enter try block!')
     try:
-        print ( "Simulated camera module for Azure IoT Edge. Press Ctrl-C to exit." )
+        print('hanler activation')
+        iotclient.on_method_request_received = receive_methodrequest_handler
+    except:
+        print('failed')
+        iotclient.shutdown()
+        raise
+    print('return client')
+    return iotclient
 
-        try:
-            global CLIENT
-            CLIENT = IoTHubModuleClient.create_from_edge_environment()
-        except Exception as iothub_error:
-            print ( "Unexpected error {} from IoTHub".format(iothub_error) )
-            return
 
-        print ( "The sample is now sending images for processing and will indefinitely.")
+async def run_sample(client):
+    while True:
+        await asyncio.sleep(1000)
 
-        while True:
-            classification = sendFrameForProcessing(imagePath, imageProcessingEndpoint)
-            if classification:
-                send_to_hub(classification)
-            time.sleep(30)
-
-    except KeyboardInterrupt:
-        print ( "IoT Edge module sample stopped" )
-
-if __name__ == '__main__':
+def main():
+    print('entered main')
+    client = create_client()
+    print('created client')
+    loop = asyncio.get_event_loop()
     try:
-        # Retrieve the image location and image classifying server endpoint from container environment
-        IMAGE_PATH = os.getenv('IMAGE_PATH', "")
-        IMAGE_PROCESSING_ENDPOINT = os.getenv('IMAGE_PROCESSING_ENDPOINT', "")
-        print(IMAGE_PROCESSING_ENDPOINT)
-    except ValueError as error:
-        print ( error )
-        sys.exit(1)
+        loop.run_until_complete(run_sample(client))
+    except Exception as e:
+        print(e)
+        raise
+    finally:
+        loop.run_until_complete(client.shutdown())
+        loop.close()
 
-    if ((IMAGE_PATH and IMAGE_PROCESSING_ENDPOINT) != ""):
-        main(IMAGE_PATH, IMAGE_PROCESSING_ENDPOINT)
-    else: 
-        print ( "Error: Image path or image-processing endpoint missing" )
+
+
+if __name__ == "__main__":
+    print('start module')
+    main()
+

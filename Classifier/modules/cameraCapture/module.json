@@ -4,7 +4,7 @@
   "image": {
     "repository": "cecregistry.azurecr.io/cameracapture",
     "tag": {
-      "version": "0.0.1",
+      "version": "0.3.5",
       "platforms": {
         "arm32v7": "./Dockerfile.arm32v7",
         "amd64": "./Dockerfile.arm32v7",

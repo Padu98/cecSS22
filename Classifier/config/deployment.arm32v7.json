@@ -52,8 +52,8 @@
             "status": "running",
             "restartPolicy": "always",
             "settings": {
-              "image": "cecregistry.azurecr.io/cameracapture:0.0.1-arm32v7",
-              "createOptions": "{\"Env\":[\"IMAGE_PATH=1033.png\",\"IMAGE_PROCESSING_ENDPOINT=http://Classifier/image\"]}"
+              "image": "cecregistry.azurecr.io/cameracapture:0.3.5-arm32v7",
+              "createOptions": "{\"HostConfig\":{\"Binds\":[\"/iotedge/images:/images\"]}}"
             }
           }
         }
